@@ -33,6 +33,7 @@ function makeRequest (method, url) {
 
 //compute dot prodcut between the two position vectors
 //as a measure of distance.
+export
 function distance( pos1, pos2 ) {
   const radius = 6371.e3;
   const d2r = Math.PI/180
@@ -49,6 +50,7 @@ function distance( pos1, pos2 ) {
   return angularDistance * radius;
 }
 
+export
 function getCurrentPosition() {
   return new Promise((resolve,reject)=>{
     navigator.geolocation.getCurrentPosition((position)=>{
@@ -65,6 +67,7 @@ function getCurrentPosition() {
   });
 }
 
+export
 function getNearestStop(agency, route, direction) {
   nextBusRequest = makeRequest('GET', assembleRequestUrl([
     'command=routeConfig',
@@ -112,6 +115,7 @@ function getNearestStop(agency, route, direction) {
   });
 }
 
+export
 function getPredictionForStop(route, stop) {
   return makeRequest('GET', assembleRequestUrl([
     'command=predictions',
