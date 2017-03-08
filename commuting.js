@@ -1,7 +1,7 @@
 const baseUrl = 'http://webservices.nextbus.com/service/publicJSONFeed';
 let agency = 'actransit';
 let route='57';
-let direction='57_23_1';
+let direction='57_22_0';
 
 function assembleRequestUrl (args) {
   return baseUrl+'?'+args.join('&');
@@ -31,6 +31,23 @@ function makeRequest (method, url) {
   });
 }
 
+//compute dot prodcut between the two position vectors
+//as a measure of distance.
+function distance( pos1, pos2 ) {
+  const radius = 6371.e3;
+  const d2r = Math.PI/180
+  let dotProduct =
+    //X component
+    Math.cos(pos1.lat*d2r) * Math.cos(pos1.lon*d2r) *
+    Math.cos(pos2.lat*d2r) * Math.cos(pos2.lon*d2r)
+    //Y component
+    + Math.cos(pos1.lat*d2r) * Math.sin(pos1.lon*d2r) *
+    Math.cos(pos2.lat*d2r) * Math.sin(pos2.lon*d2r)
+    //Z component
+    + Math.sin(pos1.lat*d2r) * Math.sin(pos2.lat*d2r);
+  let angularDistance = Math.acos(dotProduct);
+  return angularDistance * radius;
+}
 
 function getCurrentPosition() {
   return new Promise((resolve,reject)=>{
@@ -80,14 +97,17 @@ function getNearestStop(agency, route, direction) {
     let minDistance = 1.e99; //Should be big enough :)
     let nearestStop = result.route.stop[0];
     for(let stop of stops) {
-      //Manhattan distance should be good enough for these purposes
-      let distance = Math.abs(stop.lat-position.coords.latitude)+
-                     Math.abs(stop.lon-position.coords.longitude);
-      if(distance< minDistance) {
-        minDistance = distance;
+      let dist = distance(
+        {lon: stop.lon, lat: stop.lat},
+        {lon: position.coords.longitude, lat: position.coords.latitude}
+      );
+
+      if(dist< minDistance) {
+        minDistance = dist;
         nearestStop = stop;
       }
     }
+    console.log(minDistance);
     return nearestStop;
   });
 }
