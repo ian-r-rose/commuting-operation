@@ -4,6 +4,13 @@ import './App.css';
 
 import { getPredictions } from './commuting';
 
+let line = {
+  id: '18',
+  displayId: '18',
+  direction: '18_9_0',
+  displayDirection: ''
+}
+
 class App extends Component {
   render() {
     return (
@@ -12,23 +19,39 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
           <h2>Commuting Operation</h2>
         </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+        <Prediction line={line} />
       </div>
     );
   }
 }
 
-
-class PredictionComponent extends Component {
+class Prediction extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      prediction: [{
+        time: 0,
+        isReliable: false,
+        isDelayed: false
+      }]
+    }
+  }
+
+  render() {
+    return (
+      <div className="Prediction">
+        <p>Line: {this.props.line.displayId}</p>
+        <p>Prediction: {this.state.prediction[0].time}</p>
+      </div>
+    );
+  }
+
+  componentDidMount() {
+    getPredictions().then((pred)=>{
+      console.log(pred[0].time);
+      this.setState({ prediction: pred });
+    });
   }
 }
-
-getPredictions().then((pred)=>{
-  console.log(pred);
-});
 
 export default App;
