@@ -1,4 +1,5 @@
 const baseUrl = 'http://webservices.nextbus.com/service/publicJSONFeed';
+const proxyUrl = 'https://commuting-operation-proxy.herokuapp.com/proxy/?url='
 
 let agency = 'actransit';
 let line = {
@@ -23,7 +24,7 @@ line = {
 
 
 function assembleRequestUrl (args) {
-  return baseUrl+'?'+args.join('&');
+  return proxyUrl+baseUrl+'?'+args.join('&');
 }
 
 function makeRequest (method, url) {
