@@ -1,0 +1,7 @@
+{
+  "name": "commuting-operation-proxy",
+  "description": "An HTTPS proxy for the Nextbus public feed",
+  "repository": "https://github.com/ian-r-rose/commuting-operation",
+  "logo": "http://node-js-sample.herokuapp.com/node.svg",
+  "keywords": ["nextbus"]
+}

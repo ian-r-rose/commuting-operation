@@ -1,0 +1,24 @@
+{
+  "name": "commuting-operation-proxy",
+  "version": "0.2.5",
+  "description": "An HTTPS proxy for the Nextbus public feed",
+  "engines": {
+    "node": "5.9.1"
+  },
+  "main": "proxy.js",
+  "scripts": {
+    "start": "node proxy.js"
+  },
+  "dependencies": {
+    "express": "4.13.3",
+    "request": "2.81.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ian-r-rose/commuting-operation"
+  },
+  "keywords": [
+    "nextbus"
+  ],
+  "license": "GPL-3.0"
+}
