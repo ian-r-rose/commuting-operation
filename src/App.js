@@ -19,7 +19,12 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
           <h2>Commuting Operation</h2>
         </div>
-        <Prediction line={line} />
+        <div>
+              <Prediction line={line} />
+              <Prediction line={line} />
+              <Prediction line={line} />
+              <Prediction line={line} />
+        </div>
       </div>
     );
   }
@@ -30,7 +35,7 @@ class Prediction extends Component {
     super(props);
     this.state = {
       prediction: [{
-        time: 0,
+        time: 'loading...',
         isReliable: false,
         isDelayed: false
       }]
@@ -47,8 +52,7 @@ class Prediction extends Component {
   }
 
   componentDidMount() {
-    getPredictions().then((pred)=>{
-      console.log(pred[0].time);
+    getPredictions('actransit', '18').then((pred)=>{
       this.setState({ prediction: pred });
     });
   }

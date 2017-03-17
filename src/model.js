@@ -9,9 +9,15 @@ class PositionModel {
 class StopModel {
   id;
 
-  displayTitle;
+  displayId;
 
   position;
+}
+
+class Direction {
+  id;
+
+  displayId;
 }
 
 class LineModel {
@@ -19,9 +25,11 @@ class LineModel {
 
   displayId;
 
-  direction;
+  agency;
 
-  displayDirection;
+  direction[];
+
+  changeoverTime;
 }
 
 class PredictionModel {

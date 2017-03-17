@@ -1,28 +1,6 @@
 const baseUrl = 'http://webservices.nextbus.com/service/publicJSONFeed';
 const proxyUrl = 'https://commuting-operation-proxy.herokuapp.com/proxy/?url='
 
-let agency = 'actransit';
-let line = {
-  id: '57',
-  displayId: '57',
-  direction: '57_22_0',
-  displayDirection: 'To Emeryville Public Market'
-}
-
-line = {
-  id: '18',
-  displayId: '18',
-  direction: '18_9_0',
-  displayDirection: ''
-}
-line = {
-  id: '6',
-  displayId: '6',
-  direction: '6_19_1',
-  displayDirection: ''
-}
-
-
 function assembleRequestUrl (args) {
   return proxyUrl+baseUrl+'?'+args.join('&');
 }
@@ -71,6 +49,45 @@ function distance( pos1, pos2 ) {
 }
 
 export
+function getLineForId(agency, id) {
+  return makeRequest('GET', assembleRequestUrl([
+    'command=routeConfig',
+    'a='+agency,
+    'r='+id
+  ])).then((result)=> {
+    let directions = [];
+    for (let dir of result.route.direction) {
+      directions.push({
+        id: dir.tag,
+        displayId: dir.title
+      });
+    }
+    return {
+      id: id,
+      displayId: result.route.title,
+      agency: agency,
+      direction: directions,
+      changeoverTime: 12
+    }
+  });
+}
+
+export
+function getDirectionForLine(line) {
+  let currentTime = new Date();
+  let changeoverTime = new Date(
+      currentTime.getFullYear(),
+      currentTime.getMonth(),
+      currentTime.getDate(),
+      line.changeoverTime);
+  if (currentTime.getTime() < changeoverTime.getTime()) {
+    return line.direction[0];
+  } else {
+    return line.direction[1];
+  }
+}
+
+export
 function getCurrentPosition() {
   return new Promise((resolve,reject)=>{
     navigator.geolocation.getCurrentPosition((position)=>{
@@ -86,10 +103,10 @@ function getCurrentPosition() {
 }
 
 export
-function getNearestStop(agency, line) {
+function getNearestStop(line, direction) {
   let nextBusRequest = makeRequest('GET', assembleRequestUrl([
     'command=routeConfig',
-    'a='+agency,
+    'a='+line.agency,
     'r='+line.id
   ]));
   let locationRequest = getCurrentPosition();
@@ -99,7 +116,7 @@ function getNearestStop(agency, line) {
     //both ways.
     let stopsForDirection = undefined;
     for(let dir of result.route.direction) {
-      if(dir.tag === line.direction) {
+      if(dir.tag === direction.id) {
         stopsForDirection = dir.stop;
       }
     }
@@ -119,7 +136,7 @@ function getNearestStop(agency, line) {
     let nearestStop = result.route.stop[0];
     for(let stop of stops) {
       let dist = distance(
-        {lon: stop.lon, lat: stop.lat},
+        {lon: stop.lon, lat: stop.lat, distanceFromUser: undefined},
         position
       );
 
@@ -145,7 +162,7 @@ export
 function getPredictionsForStop(line, stop) {
   return makeRequest('GET', assembleRequestUrl([
     'command=predictions',
-    'a='+agency,
+    'a='+line.agency,
     'r='+line.id,
     's='+stop.id
   ])).then((result)=>{
@@ -172,8 +189,11 @@ function getPredictionsForStop(line, stop) {
 }
 
 export
-function getPredictions() {
-  return getNearestStop(agency, line).then((stop)=>{
-    return getPredictionsForStop(line, stop);
+function getPredictions(agency, lineId) {
+  return getLineForId(agency, lineId).then((line)=>{
+    let direction = getDirectionForLine(line);
+    return getNearestStop(line, direction).then((stop)=>{
+      return getPredictionsForStop(line, stop);
+    });
   });
 }
