@@ -96,6 +96,8 @@ class LineInfo extends Component {
     );
   }
 
+
+
   componentDidMount() {
     let direction = getDirectionForLine(this.props.line);
     getNearestStop(this.props.line, direction).then((stop)=>{
@@ -105,6 +107,7 @@ class LineInfo extends Component {
     });
   }
 }
+
 
 export
 class Prediction extends Component {
@@ -121,11 +124,16 @@ class Prediction extends Component {
 
   render() {
     let predictions = [];
+    let count = 0;
     for (let prediction of this.state.prediction) {
-      predictions.push(<div className="Prediction">{prediction.time}</div>);
+      let c = "Prediction";
+      if (!prediction.isReliable) {
+        c = c + " Unreliable";
+      }
+      predictions.push(<div key={count++} className={c}>{prediction.time}</div>);
     }
     return (
-      <div className="Prediction">
+      <div className="PredictionList">
         {predictions}
       </div>
     );

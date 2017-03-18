@@ -1,19 +1,17 @@
 .LineListing {
-  text-align: left
+  width: 500px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .Line {
   display: block;
+  text-align: left;
 }
 
 .LineInfo {
   display: inline-block;
   text-align: left;
-}
-
-.Prediction {
-  display: inline-block;
-  text-align: right;
 }
 
 .LineId {
@@ -41,12 +39,18 @@
   font-size: small;
 }
 
+.PredictionList {
+  display: inline-block;
+  margin-right: 0;
+  margin-left: auto;
+}
+
 .Prediction {
+  display: inline-block;
   font-size: large;
-  text-align: right;
   padding: 5px;
 }
 
-.Unreliable {
+.Prediction.Unreliable {
   opacity: 0.5
 }
