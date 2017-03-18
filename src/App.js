@@ -2,36 +2,20 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-import { Line, LineInfo, Prediction } from './components';
+import { LineListing } from './components';
 
-let line = {
-  agency: 'actransit',
-  id: '18',
-  displayId: '18',
-  direction: [{
-    id: '18_9_0',
-    displayId: 'To Montclair'
-    }, {
-    id: '18_9_0',
-    displayId: 'To Montclair'
-  }],
-  changeoverTime: 12
-}
+let lineIds = ['12', '57', '6', '18', '72']
+
 
 class App extends Component {
   render() {
     return (
       <div className="App">
         <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Commuting Operation</h2>
+          <img src={logo} className="App-logo" alt="logo" style={{display: 'inline-block'}}/>
+          <h1 style={{display: 'inline-block'}}>Commuting<br/>Operation</h1>
         </div>
-        <div>
-          <Line line={line} />
-          <Line line={line} />
-          <Line line={line} />
-          <Line line={line} />
-        </div>
+        <LineListing lineIds={lineIds} />
       </div>
     );
   }
