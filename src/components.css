@@ -1,0 +1,52 @@
+.LineListing {
+  text-align: left
+}
+
+.Line {
+  display: block;
+}
+
+.LineInfo {
+  display: inline-block;
+  text-align: left;
+}
+
+.Prediction {
+  display: inline-block;
+  text-align: right;
+}
+
+.LineId {
+  display: inline-block;
+  text-align: left;
+  font-size: large;
+  padding: 20px;
+}
+
+.LineGeography {
+  display: inline-block;
+  padding: 20px;
+}
+
+.LineDirection {
+  display: inline-block;
+  font-size: small;
+}
+
+.StopLocation {
+  font-size: small;
+}
+
+.StopDistance {
+  font-size: small;
+}
+
+.Prediction {
+  font-size: large;
+  text-align: right;
+  padding: 5px;
+}
+
+.Unreliable {
+  opacity: 0.5
+}

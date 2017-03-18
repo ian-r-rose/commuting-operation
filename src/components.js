@@ -4,6 +4,8 @@ import {
   getDirectionForLine, getNearestStop
 } from './nextbus';
 
+import './components.css';
+
 let agency = 'actransit'
 
 export
@@ -85,9 +87,11 @@ class LineInfo extends Component {
     let direction = getDirectionForLine(this.props.line);
     return (
       <div className="LineInfo">
-        <span>{this.props.line.displayId+' '}</span>
-        <span>{direction.displayId}</span>
-        <span>{this.state.stop.displayId}</span>
+        <div className="LineId">{this.props.line.displayId}</div>
+        <div className="LineGeography">
+          <div className="LineDirection">{direction.displayId}</div>
+          <div className="StopLocation">{this.state.stop.displayId}</div>
+        </div>
       </div>
     );
   }
@@ -116,9 +120,13 @@ class Prediction extends Component {
   }
 
   render() {
+    let predictions = [];
+    for (let prediction of this.state.prediction) {
+      predictions.push(<div className="Prediction">{prediction.time}</div>);
+    }
     return (
       <div className="Prediction">
-        <p>Prediction: {this.state.prediction[0].time}</p>
+        {predictions}
       </div>
     );
   }
