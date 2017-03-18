@@ -95,7 +95,6 @@ class LineInfo extends Component {
   componentDidMount() {
     let direction = getDirectionForLine(this.props.line);
     getNearestStop(this.props.line, direction).then((stop)=>{
-      console.log(stop)
       this.setState({
         stop: stop
       });
