@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { 
-  getLineForId, getPredictions, getDirectionForLine
+  getLineForId, getPredictions, 
+  getDirectionForLine, getNearestStop
 } from './nextbus';
 
 let agency = 'actransit'
@@ -71,14 +72,34 @@ class Line extends Component {
 
 export
 class LineInfo extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      stop: {
+        displayId: 'Getting location...'
+      }
+    }
+  }
+
   render() {
     let direction = getDirectionForLine(this.props.line);
     return (
       <div className="LineInfo">
         <span>{this.props.line.displayId+' '}</span>
         <span>{direction.displayId}</span>
+        <span>{this.state.stop.displayId}</span>
       </div>
     );
+  }
+
+  componentDidMount() {
+    let direction = getDirectionForLine(this.props.line);
+    getNearestStop(this.props.line, direction).then((stop)=>{
+      console.log(stop)
+      this.setState({
+        stop: stop
+      });
+    });
   }
 }
 

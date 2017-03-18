@@ -148,7 +148,7 @@ function getNearestStop(line, direction) {
     //Return the stop model.
     return {
       id: nearestStop.tag,
-      displayTitle: nearestStop.title,
+      displayId: nearestStop.title,
       position: {
         lon: Number(nearestStop.lon),
         lat: Number(nearestStop.lat),
