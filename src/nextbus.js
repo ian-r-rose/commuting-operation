@@ -241,13 +241,3 @@ function getPredictionsForStop(line, stop) {
     return predictionArray;
   });
 }
-
-export
-function getPredictions(line) {
-  return getLineForId(line.agency, line.id).then((line)=>{
-    let direction = getDirectionForLine(line);
-    return getNearestStop(line, direction).then((stop)=>{
-      return getPredictionsForStop(line, stop);
-    });
-  });
-}
