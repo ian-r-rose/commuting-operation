@@ -18,13 +18,13 @@
 
 /* Add Animation */
 @-webkit-keyframes animatetop {
-    from {top: -100px; opacity: 0} 
-    to {top: 100px; opacity: 1}
+    from {top: -300px; opacity: 0} 
+    to {top: 0px; opacity: 1}
 }
 
 @keyframes animatetop {
-    from {top: -100px; opacity: 0}
-    to {top: 100px; opacity: 1}
+    from {top: -300px; opacity: 0}
+    to {top: 0px; opacity: 1}
 }
 
 .SelectionBlock {

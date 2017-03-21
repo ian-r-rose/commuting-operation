@@ -4,7 +4,7 @@ import {
   getDirectionForLine, getNearestStop
 } from './nextbus';
 
-import './components.css';
+import './listing.css';
 import clear from './clear.svg';
 
 export

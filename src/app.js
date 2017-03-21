@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import add from './add.svg';
 import './app.css';
-import './components.css';
+import './listing.css';
 
-import { LineListing } from './components';
+import { LineListing } from './listing';
 import { AddLineDialog } from './dialog';
 
 
