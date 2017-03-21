@@ -8,35 +8,30 @@
 .Line {
   display: flex;
   text-align: left;
+  align-items: center;
 }
 
 .LineInfo {
-  display: inline-block;
+  display: flex;
+  align-items: center;
   text-align: left;
+  width: 60%;
 }
 
 .LineId {
   display: inline-block;
   text-align: left;
-  font-size: large;
-  padding: 20px;
+  font-size: x-large;
+  width: 25%
 }
 
 .LineGeography {
   display: inline-block;
-  padding: 20px;
-}
-
-.LineDirection {
-  display: inline-block;
-  font-size: small;
+  width: 75%
 }
 
 .StopLocation {
-  font-size: small;
-}
-
-.StopDistance {
+  display: inline;
   font-size: small;
 }
 
@@ -44,14 +39,19 @@
   display: inline-block;
   margin-right: 0;
   margin-left: auto;
+  width: 30%;
 }
 
 .Prediction {
   display: inline-block;
-  font-size: large;
+  font-size: normal;
   padding: 5px;
 }
 
 .Prediction.Unreliable {
   opacity: 0.5
+}
+
+.RemoveButton {
+  background-color: black;
 }

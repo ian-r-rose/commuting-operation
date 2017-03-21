@@ -49,7 +49,7 @@ class Line extends Component {
       <div className="Line">
         <LineInfo line={this.props.line} stop={this.state.stop} />
         <Prediction line={this.props.line} stop={this.state.stop} />
-        <img height="20px" src={clear} alt="Remove route" onClick={()=>{this.props.remove(this.props.line.id)}}/>
+        <img className="RemoveButton" src={clear} alt="Remove route" onClick={()=>{this.props.remove(this.props.line.id)}}/>
       </div>
     );
   }
@@ -77,12 +77,13 @@ export
 class LineInfo extends Component {
   render() {
     let direction = getDirectionForLine(this.props.line);
+    let displayDirection = direction.displayId.charAt(0).toLowerCase()
+      + direction.displayId.slice(1);
     return (
       <div className="LineInfo">
         <div className="LineId">{this.props.line.displayId}</div>
         <div className="LineGeography">
-          <div className="LineDirection">{direction.displayId}</div>
-          <div className="StopLocation">{this.props.stop.displayId}</div>
+          <div className="StopLocation">{this.props.stop.displayId+' '+displayDirection}</div>
         </div>
       </div>
     );
