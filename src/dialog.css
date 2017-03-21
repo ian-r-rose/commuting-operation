@@ -1,7 +1,9 @@
 .AddLineDialog {
-  position: fixed;
+  position: relative;
   z-index: 1;
   display: block;
+  left: 0;
+  right: 0;
   background-color: #fefefe;
   margin: auto;
   padding: 0;
@@ -16,24 +18,45 @@
 
 /* Add Animation */
 @-webkit-keyframes animatetop {
-    from {top: -300px; opacity: 0} 
+    from {top: -100px; opacity: 0} 
     to {top: 100px; opacity: 1}
 }
 
 @keyframes animatetop {
-    from {top: -300px; opacity: 0}
+    from {top: -100px; opacity: 0}
     to {top: 100px; opacity: 1}
 }
 
-.SelectElement {
+.SelectionBlock {
   display: block;
-  padding: 4px 3px 3px 5px;
-  font-size: large;
-  margin: 0;
-  border: 0;
+  text-align: left;
   width: 100%;
 }
 
+.SelectionLabel {
+  display: inline-block;
+  padding: 0px 2% 0px 5%;
+  width: 30%;
+  font-size: normal;
+}
+
+select {
+  padding: 0px 0px 0px 0px;
+  font-size: normal;
+  margin: 0;
+  border: 0;
+  width: 55%;
+  display: inline-block;
+  text-align: right;
+}
+
 option {
-  text-align: center;
+  font-size: large;
+}
+
+button {
+  padding: 10px 10px 10px 10px;
+  margin-left: 20px;
+  margin-right: 20px;
+  font-size: large;
 }

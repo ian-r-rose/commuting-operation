@@ -71,22 +71,33 @@ class AddLineDialog extends Component {
 
     return (
         <div className="AddLineDialog">
-          <p>Transit agency:</p>
-          <select className="SelectElement" onChange={(value)=>{this.handleAgencySelection(value);}} defaultValue={agencyPreference}>
-            {agencies}
-          </select>
-          <p>Route:</p>
-          <select className="SelectElement" onChange={(value)=>{this.handleLineSelection(value);}}>
-            {lines}
-          </select>
-          <p>Inbound direction:</p>
-          <select className="SelectElement" onChange={(value)=>{this.handleDirectionSelection(value);}}>
-            {directions}
-          </select>
-          <p>Time of day to switch from inbound to outbound:</p>
-          <select className="SelectElement" onChange={(value)=>{this.handleTimeSelection(value);}} defaultValue={changeoverTimePreference}>
-            {times}
-          </select>
+          <div className="SelectionBlock">
+            <p className="SelectionLabel">Transit agency:</p>
+            <select onChange={(value)=>{this.handleAgencySelection(value);}} defaultValue={agencyPreference}>
+              {agencies}
+            </select>
+          </div>
+
+          <div className="SelectionBlock">
+            <p className="SelectionLabel">Route:</p>
+            <select onChange={(value)=>{this.handleLineSelection(value);}}>
+              {lines}
+            </select>
+          </div>
+
+          <div className="SelectionBlock">
+            <p className="SelectionLabel">Inbound direction:</p>
+            <select onChange={(value)=>{this.handleDirectionSelection(value);}}>
+              {directions}
+            </select>
+          </div>
+
+          <div className="SelectionBlock">
+            <p className="SelectionLabel">Change directions at:</p>
+            <select onChange={(value)=>{this.handleTimeSelection(value);}} defaultValue={changeoverTimePreference}>
+              {times}
+            </select>
+          </div>
           <br/>
           <button onClick={()=>{this.props.onClose()}}>Cancel</button>
           <button onClick={()=>{this.handleOkButton()}}>Add Line</button>
