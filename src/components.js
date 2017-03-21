@@ -128,7 +128,7 @@ class Prediction extends Component {
     for (let prediction of this.state.prediction) {
       let c = "Prediction";
       if (!prediction.isReliable) {
-        c = c + " Unreliable";
+        c += " Unreliable";
       }
       predictions.push(<div key={count++} className={c}>{prediction.time}</div>);
     }

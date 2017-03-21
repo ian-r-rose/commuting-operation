@@ -20,6 +20,22 @@ class Direction {
   displayId;
 }
 
+class AgencyModel {
+  id;
+
+  displayId;
+
+  region;
+}
+
+class DirectionPreference {
+  inbound;
+
+  outbound;
+
+  toOutboundTime;
+}
+
 class LineModel {
   id;
 
@@ -29,7 +45,7 @@ class LineModel {
 
   direction[];
 
-  changeoverTime;
+  directionPreference;
 }
 
 class PredictionModel {

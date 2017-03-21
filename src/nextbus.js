@@ -49,6 +49,47 @@ function distance( pos1, pos2 ) {
 }
 
 export
+function getAgencyList() {
+  return makeRequest('GET', assembleRequestUrl([
+    'command=agencyList'
+  ])).then((result) => {
+    let agencies = [];
+    for (let agency of result.agency) {
+      agencies.push({
+        id: agency.tag,
+        displayId: agency.title,
+        region: agency.regionTitle
+      });
+    }
+    return agencies;
+  });
+}
+
+export
+function getLinesForAgency(agency) {
+  return makeRequest('GET', assembleRequestUrl([
+    'command=routeList',
+    'a='+agency
+  ])).then((result) => {
+    let lines = [];
+    let routes = result.route;
+    if(!Array.isArray(result.route)) {
+      routes = [routes];
+    }
+    for (let line of routes) {
+      lines.push({
+        id: line.tag,
+        displayId: line.title,
+        agency: agency,
+        direction: undefined,
+        directionPreference: undefined
+      });
+    }
+    return lines;
+  });
+}
+
+export
 function getLineForId(agency, id) {
   return makeRequest('GET', assembleRequestUrl([
     'command=routeConfig',
@@ -56,7 +97,11 @@ function getLineForId(agency, id) {
     'r='+id
   ])).then((result)=> {
     let directions = [];
-    for (let dir of result.route.direction) {
+    let routeDir = result.route.direction;
+    if(!Array.isArray(routeDir)) {
+      routeDir = [routeDir];
+    }
+    for (let dir of routeDir) {
       directions.push({
         id: dir.tag,
         displayId: dir.title
@@ -67,23 +112,30 @@ function getLineForId(agency, id) {
       displayId: result.route.title,
       agency: agency,
       direction: directions,
-      changeoverTime: 12
+      directionPreference: undefined
     }
   });
 }
 
+
 export
 function getDirectionForLine(line) {
+  let toOutbound;
+  if(line.directionPreference) {
+    toOutbound = line.directionPreference.toOutboundTime;
+  } else {
+    return line.direction[0];
+  }
   let currentTime = new Date();
   let changeoverTime = new Date(
       currentTime.getFullYear(),
       currentTime.getMonth(),
       currentTime.getDate(),
-      line.changeoverTime);
+      Number(toOutbound));
   if (currentTime.getTime() < changeoverTime.getTime()) {
-    return line.direction[0];
+    return line.directionPreference.inbound;
   } else {
-    return line.direction[1];
+    return line.directionPreference.outbound;
   }
 }
 
