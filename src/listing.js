@@ -121,6 +121,10 @@ class Prediction extends Component {
         c += " Unreliable";
       }
       predictions.push(<div key={count++} className={c}>{prediction.time}</div>);
+      // Three predictions should be enough
+      if (count === 3) {
+        break;
+      }
     }
     return (
       <div className="PredictionList">
