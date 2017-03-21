@@ -8,17 +8,16 @@ import './components.css';
 import { LineListing } from './components';
 import { AddLineDialog } from './dialog';
 
-let lineIds = ['12', '57', '6', '18', '72']
-
 
 class App extends Component {
   constructor(props) {
     super(props);
 
+    let lines = this.getStoredLines();
+
     this.state = {
-      agencyPreference: props.agencyPreference,
-      changeoverTimePreference: props.changeoverTimePreference,
-      modalOpen: false
+      modalOpen: false,
+      lines: lines
     };
   }
 
@@ -31,8 +30,8 @@ class App extends Component {
           <img height="50px" src={clear} alt="Remove route" onClick={()=>{this.closeModal()}}/>
           <img height="50px" src={add} alt="Add route" onClick={()=>{this.openModal()}} />
         </div>
-        <AddLineDialog isOpen={this.state.modalOpen} onClose={()=>{this.closeModal()}} />
-        <LineListing lineIds={lineIds} />
+        <AddLineDialog isOpen={this.state.modalOpen} onClose={()=>{this.closeModal()}} addLine={(line)=>{this.addLine(line);}} />
+        <LineListing lines={this.state.lines} removeLine={(lineId)=>{this.removeLine(lineId);}} />
       </div>
     );
   }
@@ -47,6 +46,37 @@ class App extends Component {
     this.setState( {
       modalOpen: false
     });
+  }
+
+  addLine(line) {
+    let lines = this.state.lines;
+    lines.push(line);
+    this.setState({
+      lines: lines
+    });
+    //update the cache
+    localStorage.setItem('lines', JSON.stringify(lines));
+  }
+
+  removeLine(lineId) {
+    let lines = this.state.lines;
+    lines = lines.filter(l => l.id!==lineId);
+    this.setState({
+      lines: lines
+    });
+    //update the cache
+    localStorage.setItem('lines', JSON.stringify(lines));
+  }
+
+
+  getStoredLines() {
+    // Load the stored lines, if any.
+    let storedLines = JSON.parse(localStorage.getItem('lines'));
+    if (!storedLines) {
+      storedLines = [];
+    }
+
+    return storedLines;
   }
 }
 

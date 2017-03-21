@@ -1,26 +1,19 @@
 import React, { Component } from 'react';
 import { 
-  getLineForId, getPredictions, 
+  getPredictions, 
   getDirectionForLine, getNearestStop
 } from './nextbus';
 
 import './components.css';
-
-let agency = 'actransit'
+import './clear.svg';
 
 export
 class LineListing extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      lines: []
-    }
-  }
   render() {
-    let lines = this.state.lines;
+    let lines = this.props.lines;
     let listing = [];
     for (let line of lines) {
-      listing.push(<Line key={line.id} line={line} />);
+      listing.push(<Line key={JSON.stringify(line)} line={line} />);
     }
     return (
       <div className="LineListing">
@@ -29,34 +22,12 @@ class LineListing extends Component {
     );
   }
 
-  componentDidMount() {
-    this._getLines(this.props.lineIds).then((lines)=>{
-      this.setState({ lines: lines });
-    });
+  addLine(line) {
+    this.props.addLine(line);
   }
 
-  _getLines(lineIds) {
-    // Load the stored lines, if any.
-    let storedLines = JSON.parse(localStorage.getItem('lines'));
-    if (!storedLines) {
-      storedLines = [];
-    }
-
-    let promises = [];
-    let lines = [];
-    for (let lineId of this.props.lineIds) {
-      let current = storedLines.find( (line)=> { return line.id === lineId; });
-      if (current) {
-        lines.push(current);
-      } else {
-        promises.push( getLineForId(agency, lineId));
-      }
-    }
-    return Promise.all(promises).then((retrieved)=>{
-      lines = lines.concat(retrieved);
-      localStorage.setItem('lines', JSON.stringify(lines));
-      return lines;
-    });
+  removeLine(lineId) {
+    this.props.removeLine(lineId);
   }
 }
 
@@ -140,7 +111,7 @@ class Prediction extends Component {
   }
 
   componentDidMount() {
-    getPredictions('actransit', this.props.line.id).then((pred)=>{
+    getPredictions(this.props.line).then((pred)=>{
       this.setState({ prediction: pred });
     });
   }

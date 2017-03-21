@@ -3,8 +3,12 @@ import { getAgencyList, getLinesForAgency, getLineForId } from './nextbus';
 import './dialog.css';
 
 let agencyPreference = localStorage.getItem('agencyPreference');
-if (!agencyPreference) {
-  agencyPreference = 'actransit';
+if (!agencyPreference || !agencyPreference.id) {
+  agencyPreference = {
+    id: 'actransit',
+    displayId: 'AC Transit'
+  }
+  localStorage.setItem('agencyPreference', agencyPreference);
 }
 
 let changeoverTimePreference = Number(localStorage.getItem('changeoverTimePreference'));
@@ -20,7 +24,6 @@ class AddLineDialog extends Component {
     this.state = {
       currentAgency: agencyPreference,
       currentLine: undefined,
-      currentDirection: undefined,
       currentChangeover: changeoverTimePreference,
       agencyListing: undefined,
       lineListing: undefined,
@@ -49,9 +52,9 @@ class AddLineDialog extends Component {
       }
     }
     let directions = undefined;
-    if(this.state.directionListing) {
+    if(this.state.currentLine.direction) {
       directions = [];
-      for (let direction of this.state.directionListing) {
+      for (let direction of this.state.currentLine.direction) {
         directions.push(<option key={direction.id} value={direction.id}>{direction.displayId}</option>);
       }
     }
@@ -84,6 +87,8 @@ class AddLineDialog extends Component {
           <select onChange={(value)=>{this.handleTimeSelection(value);}} defaultValue={changeoverTimePreference}>
             {times}
           </select>
+          <br/>
+          <button onClick={()=>{this.handleOkButton()}}>Add Line</button>
         </div>
     );
   }
@@ -98,7 +103,9 @@ class AddLineDialog extends Component {
   }
 
   handleAgencySelection(event) {
-    this.updateAgency(event.target.value);
+    let agencies = this.state.agencyListing;
+    let newAgency = agencies.find((a) => a.id === event.target.value);
+    this.updateAgency(newAgency);
   }
 
   updateAgency(agency) {
@@ -114,31 +121,43 @@ class AddLineDialog extends Component {
         lineListing: lines,
         currentAgency: agency
       });
-      this.updateLine(lines[0].id);
+      this.updateLine(lines[0]);
     });
   }
 
   handleLineSelection(event) {
-    this.updateLine(event.target.value);
+    let lines = this.state.lineListing;
+    let newLine = lines.find((l) => l.id === event.target.value);
+    this.updateLine(newLine);
   }
 
-  updateLine(lineId) {
-    getLineForId(this.state.currentAgency, lineId).then((line)=>{
+  updateLine(line) {
+    getLineForId(this.state.currentAgency, line.id).then((line)=>{
       this.setState({
-        currentLine: line.id,
-        directionListing: line.direction
+        currentLine: line,
       });
-      this.updateDirection(line.direction[0]);
+      this.updateDirectionPreference(line.direction[0]);
     });
   }
 
   handleDirectionSelection(event) {
-    this.updateDirection(event.target.value);
+    this.updateDirectionPreference(event.target.value);
   }
     
-  updateDirection(directionId) {
+  updateDirectionPreference(directionId) {
+    let line = this.state.currentLine;
+    let inbound = directionId;
+    //choose the tag of the first one not matching inbound
+    let outbound = line.direction.find((d) => d !== inbound);
+
+    line.directionPreference = {
+      inbound: inbound,
+      outbound: outbound,
+      toOutboundTime: this.state.currentChangeover
+    }
+
     this.setState({
-      currentDirection: directionId
+      currentLine: line
     });
   } 
 
@@ -152,9 +171,18 @@ class AddLineDialog extends Component {
     localStorage.setItem('changeoverTimePreference', hour);
     changeoverTimePreference = hour;
 
+    let line = this.state.currentLine;
+    line.directionPreference.toOutboundTime = hour;
+
     this.setState({
-      currentChangeover: hour
+      currentChangeover: hour,
+      currentLine: line
     });
+  }
+
+  handleOkButton() {
+    let line = this.state.currentLine;
+    this.props.addLine(line);
   }
 }
 

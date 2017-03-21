@@ -69,7 +69,7 @@ export
 function getLinesForAgency(agency) {
   return makeRequest('GET', assembleRequestUrl([
     'command=routeList',
-    'a='+agency
+    'a='+agency.id
   ])).then((result) => {
     let lines = [];
     let routes = result.route;
@@ -93,7 +93,7 @@ export
 function getLineForId(agency, id) {
   return makeRequest('GET', assembleRequestUrl([
     'command=routeConfig',
-    'a='+agency,
+    'a='+agency.id,
     'r='+id
   ])).then((result)=> {
     let directions = [];
@@ -158,7 +158,7 @@ export
 function getNearestStop(line, direction) {
   let nextBusRequest = makeRequest('GET', assembleRequestUrl([
     'command=routeConfig',
-    'a='+line.agency,
+    'a='+line.agency.id,
     'r='+line.id
   ]));
   let locationRequest = getCurrentPosition();
@@ -214,7 +214,7 @@ export
 function getPredictionsForStop(line, stop) {
   return makeRequest('GET', assembleRequestUrl([
     'command=predictions',
-    'a='+line.agency,
+    'a='+line.agency.id,
     'r='+line.id,
     's='+stop.id
   ])).then((result)=>{
@@ -241,8 +241,8 @@ function getPredictionsForStop(line, stop) {
 }
 
 export
-function getPredictions(agency, lineId) {
-  return getLineForId(agency, lineId).then((line)=>{
+function getPredictions(line) {
+  return getLineForId(line.agency, line.id).then((line)=>{
     let direction = getDirectionForLine(line);
     return getNearestStop(line, direction).then((stop)=>{
       return getPredictionsForStop(line, stop);
