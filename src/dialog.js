@@ -136,7 +136,7 @@ class AddLineDialog extends Component {
       this.setState({
         currentLine: line,
       });
-      this.updateDirectionPreference(line.direction[0]);
+      this.updateDirectionPreference(line.direction[0].id);
     });
   }
 
@@ -148,7 +148,7 @@ class AddLineDialog extends Component {
     let line = this.state.currentLine;
     let inbound = directionId;
     //choose the tag of the first one not matching inbound
-    let outbound = line.direction.find((d) => d !== inbound);
+    let outbound = line.direction.find((d) => d.id !== inbound).id;
 
     line.directionPreference = {
       inbound: inbound,

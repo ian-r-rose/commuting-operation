@@ -133,9 +133,11 @@ function getDirectionForLine(line) {
       currentTime.getDate(),
       Number(toOutbound));
   if (currentTime.getTime() < changeoverTime.getTime()) {
-    return line.directionPreference.inbound;
+    return line.direction.find((d)=>
+      d.id === line.directionPreference.inbound);
   } else {
-    return line.directionPreference.outbound;
+    return line.direction.find((d)=>
+      d.id === line.directionPreference.outbound);
   }
 }
 
