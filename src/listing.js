@@ -12,8 +12,10 @@ class LineListing extends Component {
   render() {
     let lines = this.props.lines;
     let listing = [];
+    let i = 0;
     for (let line of lines) {
-      listing.push(<Line key={JSON.stringify(line)} line={line} remove={(id)=>{this.removeLine(id);}} />);
+      listing.push(<Line even={!!(i%2 === 0)} key={JSON.stringify(line)} line={line} remove={(id)=>{this.removeLine(id);}} />);
+      i++;
     }
     return (
       <div className="LineListing">
@@ -45,8 +47,14 @@ class Line extends Component {
   }
 
   render() {
+    let className;
+    if(this.props.even === true) {
+      className = "Line Even";
+    } else {
+      className = "Line Odd";
+    }
     return (
-      <div className="Line">
+      <div className={className}>
         <LineInfo line={this.props.line} stop={this.state.stop} />
         <Prediction line={this.props.line} stop={this.state.stop} />
         <img className="RemoveButton" src={clear} alt="Remove route" onClick={()=>{this.props.remove(this.props.line.id)}}/>

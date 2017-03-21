@@ -7,7 +7,6 @@
 
 .Line {
   display: flex;
-  text-align: left;
   align-items: center;
 }
 
@@ -20,7 +19,7 @@
 
 .LineId {
   display: inline-block;
-  text-align: left;
+  text-align: center;
   font-size: x-large;
   width: 25%
 }
@@ -53,5 +52,15 @@
 }
 
 .RemoveButton {
-  background-color: black;
+  display: inline-block;
+  width: 10%;
+  height: 20px;
+}
+
+.Even {
+  background-color: rgba(0, 51, 128, 0.1);
+}
+
+.Odd {
+  background-color: rgba(0, 170, 68, 0.1);
 }
