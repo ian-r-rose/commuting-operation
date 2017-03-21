@@ -25,8 +25,8 @@ class App extends Component {
       <div className="App">
         <div className="App-header">
           <img src={logo} className="App-logo" alt="logo"/>
-          <h1>Commuting Operation</h1>
-          <img height="50px" src={add} alt="Add route" onClick={()=>{this.openModal()}} />
+          <h1>&nbsp; Commuting Operation &nbsp;</h1>
+          <img className="AddLineButton" height="50px" src={add} alt="Add route" onClick={()=>{this.openModal()}} />
         </div>
         <AddLineDialog isOpen={this.state.modalOpen} onClose={()=>{this.closeModal()}} addLine={(line)=>{this.addLine(line);}} />
         <LineListing lines={this.state.lines} removeLine={(lineId)=>{this.removeLine(lineId);}} />

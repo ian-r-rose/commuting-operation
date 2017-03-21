@@ -52,7 +52,7 @@ class AddLineDialog extends Component {
       }
     }
     let directions = undefined;
-    if(this.state.currentLine.direction) {
+    if(this.state.currentLine && this.state.currentLine.direction) {
       directions = [];
       for (let direction of this.state.currentLine.direction) {
         directions.push(<option key={direction.id} value={direction.id}>{direction.displayId}</option>);
@@ -71,20 +71,20 @@ class AddLineDialog extends Component {
 
     return (
         <div className="AddLineDialog">
-          <p>Hello, world</p>
-          <select onChange={(value)=>{this.handleAgencySelection(value);}} defaultValue={agencyPreference}>
+          <p>Transit agency:</p>
+          <select className="SelectElement" onChange={(value)=>{this.handleAgencySelection(value);}} defaultValue={agencyPreference}>
             {agencies}
           </select>
-          <br/>
-          <select onChange={(value)=>{this.handleLineSelection(value);}}>
+          <p>Route:</p>
+          <select className="SelectElement" onChange={(value)=>{this.handleLineSelection(value);}}>
             {lines}
           </select>
-          <br/>
-          <select onChange={(value)=>{this.handleDirectionSelection(value);}}>
+          <p>Inbound direction:</p>
+          <select className="SelectElement" onChange={(value)=>{this.handleDirectionSelection(value);}}>
             {directions}
           </select>
-          <br/>
-          <select onChange={(value)=>{this.handleTimeSelection(value);}} defaultValue={changeoverTimePreference}>
+          <p>Time of day to switch from inbound to outbound:</p>
+          <select className="SelectElement" onChange={(value)=>{this.handleTimeSelection(value);}} defaultValue={changeoverTimePreference}>
             {times}
           </select>
           <br/>
