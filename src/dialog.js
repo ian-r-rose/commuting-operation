@@ -7,9 +7,9 @@ if (!agencyPreference) {
   agencyPreference = 'actransit';
 }
 
-let changeoverTimePreference = localStorage.getItem('changeoverTimePreference');
+let changeoverTimePreference = Number(localStorage.getItem('changeoverTimePreference'));
 if (!changeoverTimePreference) {
-  changeoverTimePreference = 12;
+  changeoverTimePreference = 13;
 }
 
 export
@@ -55,10 +55,21 @@ class AddLineDialog extends Component {
         directions.push(<option key={direction.id} value={direction.id}>{direction.displayId}</option>);
       }
     }
+    let hours = ['12:00 AM', '1:00 AM', '2:00 AM', '3:00 AM', '4:00 AM', '5:00 AM',
+                 '6:00 AM', '7:00 AM', '8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM',
+                 '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM',
+                 '6:00 PM', '7:00 PM', '8:00 PM', '9:00 PM', '10:00 PM', '11:00 PM'];
+    let i = 0;
+    let times = [];
+    for(let hour of hours) {
+      i++;
+      times.push(<option key={i} value={i}>{hour}</option>);
+    }
+
     return (
         <div className="AddLineDialog">
           <p>Hello, world</p>
-          <select onChange={(value)=>{this.handleAgencySelection(value);}} selected={this.state.currentAgency}>
+          <select onChange={(value)=>{this.handleAgencySelection(value);}} defaultValue={agencyPreference}>
             {agencies}
           </select>
           <br/>
@@ -68,6 +79,10 @@ class AddLineDialog extends Component {
           <br/>
           <select onChange={(value)=>{this.handleDirectionSelection(value);}}>
             {directions}
+          </select>
+          <br/>
+          <select onChange={(value)=>{this.handleTimeSelection(value);}} defaultValue={changeoverTimePreference}>
+            {times}
           </select>
         </div>
     );
@@ -126,5 +141,20 @@ class AddLineDialog extends Component {
       currentDirection: directionId
     });
   } 
+
+  handleTimeSelection(event) {
+    this.updateTime(event.target.value);
+  }
+
+  updateTime(hour) {
+
+    //Cache the selected agency as the preferred one.
+    localStorage.setItem('changeoverTimePreference', hour);
+    changeoverTimePreference = hour;
+
+    this.setState({
+      currentChangeover: hour
+    });
+  }
 }
 
