@@ -5,7 +5,7 @@ import {
 } from './nextbus';
 
 import './components.css';
-import './clear.svg';
+import clear from './clear.svg';
 
 export
 class LineListing extends Component {
@@ -13,7 +13,7 @@ class LineListing extends Component {
     let lines = this.props.lines;
     let listing = [];
     for (let line of lines) {
-      listing.push(<Line key={JSON.stringify(line)} line={line} />);
+      listing.push(<Line key={JSON.stringify(line)} line={line} remove={(id)=>{this.removeLine(id);}} />);
     }
     return (
       <div className="LineListing">
@@ -38,6 +38,7 @@ class Line extends Component {
       <div className="Line">
         <LineInfo line={this.props.line} />
         <Prediction line={this.props.line} />
+        <img height="20px" src={clear} alt="Remove route" onClick={()=>{this.props.remove(this.props.line.id)}}/>
       </div>
     );
   }
