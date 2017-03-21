@@ -55,6 +55,15 @@ class Line extends Component {
   }
 
   componentDidMount() {
+    this.updateStop();
+    this._timer = setInterval(()=>{this.updateStop();}, 120000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this._timer);
+  }
+
+  updateStop() {
     let direction = getDirectionForLine(this.props.line);
     getNearestStop(this.props.line, direction).then((stop)=>{
       this.setState({
@@ -115,6 +124,9 @@ class Prediction extends Component {
     if(this.props.stop.id) {
       this.updatePrediction();
     }
+
+    //Set a timer for 30 seconds between updates.
+    this._timer = setInterval(()=>{this.updatePrediction();}, 30000);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -127,5 +139,9 @@ class Prediction extends Component {
     getPredictionsForStop(this.props.line, this.props.stop).then((pred) => {
       this.setState({ prediction: pred });
     });
+  }
+
+  componentWillUnmount() {
+    clearInterval(this._timer);
   }
 }
