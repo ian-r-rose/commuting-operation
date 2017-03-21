@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
-import clear from './clear.svg';
 import add from './add.svg';
 import './app.css';
 import './components.css';
@@ -27,7 +26,6 @@ class App extends Component {
         <div className="App-header">
           <img src={logo} className="App-logo" alt="logo"/>
           <h1>Commuting Operation</h1>
-          <img height="50px" src={clear} alt="Remove route" onClick={()=>{this.closeModal()}}/>
           <img height="50px" src={add} alt="Add route" onClick={()=>{this.openModal()}} />
         </div>
         <AddLineDialog isOpen={this.state.modalOpen} onClose={()=>{this.closeModal()}} addLine={(line)=>{this.addLine(line);}} />

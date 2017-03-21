@@ -88,6 +88,7 @@ class AddLineDialog extends Component {
             {times}
           </select>
           <br/>
+          <button onClick={()=>{this.props.onClose()}}>Cancel</button>
           <button onClick={()=>{this.handleOkButton()}}>Add Line</button>
         </div>
     );
@@ -183,6 +184,7 @@ class AddLineDialog extends Component {
   handleOkButton() {
     let line = this.state.currentLine;
     this.props.addLine(line);
+    this.props.onClose()
   }
 }
 
