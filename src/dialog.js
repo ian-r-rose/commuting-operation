@@ -13,7 +13,7 @@ if (!agencyPreference || !agencyPreference.id) {
 
 let changeoverTimePreference = Number(localStorage.getItem('changeoverTimePreference'));
 if (!changeoverTimePreference) {
-  changeoverTimePreference = 13;
+  changeoverTimePreference = 12;
 }
 
 export
@@ -65,8 +65,8 @@ class AddLineDialog extends Component {
     let i = 0;
     let times = [];
     for(let hour of hours) {
-      i++;
       times.push(<option key={i} value={i}>{hour}</option>);
+      i++;
     }
 
     return (
