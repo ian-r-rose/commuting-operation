@@ -2,6 +2,12 @@ import React, { Component } from 'react';
 import { getAgencyList, getLinesForAgency, getLineForId } from './nextbus';
 import './dialog.css';
 
+/*
+ * In case the user has an established preference for
+ * a given agency and changeover time (as they most likely do),
+ * we cache these values in localStorage.
+ */
+//Cache agency preference
 let agencyPreference = localStorage.getItem('agencyPreference');
 if (!agencyPreference || !agencyPreference.id) {
   agencyPreference = {
@@ -11,11 +17,25 @@ if (!agencyPreference || !agencyPreference.id) {
   localStorage.setItem('agencyPreference', agencyPreference);
 }
 
+// Cache changeover time.
 let changeoverTimePreference = Number(localStorage.getItem('changeoverTimePreference'));
 if (!changeoverTimePreference) {
   changeoverTimePreference = 12;
+  localStorage.setItem('changeoverTimePreference', changeoverTimePreference);
 }
 
+/**
+ * A rather large and complex component for a dialog box
+ * that allows the user to add a new line to their listing.
+ *
+ * props: whether the dialog box is currently open, callbacks
+ *        from the main app for closing the dialog and adding
+ *        a new line.
+ *
+ * state: a currently active `AgencyModel`, `LineModel`, time
+ *        for the changeover, a list of all possible `AgencyModel`s,
+ *        a list of all `LineModels` for the current `AgencyModel`.
+ */
 export
 class AddLineDialog extends Component {
   constructor(props) {
@@ -27,7 +47,6 @@ class AddLineDialog extends Component {
       currentChangeover: changeoverTimePreference,
       agencyListing: undefined,
       lineListing: undefined,
-      directionListing: undefined
     }
   }
 
@@ -37,6 +56,7 @@ class AddLineDialog extends Component {
       return null;
     }
 
+    //Populate the agencies select box.
     let agencies = undefined;
     if(this.state.agencyListing) {
       agencies = [];
@@ -44,6 +64,8 @@ class AddLineDialog extends Component {
         agencies.push(<option key={agency.id} value={agency.id}>{agency.displayId}</option>);
       }
     }
+
+    //Populate the lines select box.
     let lines = undefined;
     if(this.state.lineListing) {
       lines = [];
@@ -51,6 +73,8 @@ class AddLineDialog extends Component {
         lines.push(<option key={line.id} value={line.id}>{line.displayId}</option>);
       }
     }
+
+    //Populate the directions select box.
     let directions = undefined;
     if(this.state.currentLine && this.state.currentLine.direction) {
       directions = [];
@@ -58,6 +82,8 @@ class AddLineDialog extends Component {
         directions.push(<option key={direction.id} value={direction.id}>{direction.displayId}</option>);
       }
     }
+
+    //Populate the changeover times select box.
     let hours = ['12:00 AM', '1:00 AM', '2:00 AM', '3:00 AM', '4:00 AM', '5:00 AM',
                  '6:00 AM', '7:00 AM', '8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM',
                  '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM',
@@ -105,6 +131,9 @@ class AddLineDialog extends Component {
     );
   }
 
+  /**
+   * Upon mounting, update the currently selected agency.
+   */
   componentDidMount() {
     getAgencyList().then((agencies)=>{
       this.setState({
@@ -114,12 +143,19 @@ class AddLineDialog extends Component {
     });
   }
 
+  /**
+   * If we select a new agency from the list, update the state.
+   */
   handleAgencySelection(event) {
     let agencies = this.state.agencyListing;
     let newAgency = agencies.find((a) => a.id === event.target.value);
     this.updateAgency(newAgency);
   }
 
+  /**
+   * Given an `AgencyModel`, update the current agency,
+   * as well as updating the list of `LineModel`s for that agency.
+   */
   updateAgency(agency) {
     //Query for all the lines for this agency
     let lineListingPromise = getLinesForAgency(agency);
@@ -137,12 +173,19 @@ class AddLineDialog extends Component {
     });
   }
 
+  /**
+   * If we select a new line, update the component.
+   */
   handleLineSelection(event) {
     let lines = this.state.lineListing;
     let newLine = lines.find((l) => l.id === event.target.value);
     this.updateLine(newLine);
   }
 
+  /**
+   * Given a new `LineModel`, update the `currentLine`, as well
+   * as the listing for possible directions for that line.
+   */
   updateLine(line) {
     getLineForId(this.state.currentAgency, line.id).then((line)=>{
       this.setState({
@@ -152,10 +195,22 @@ class AddLineDialog extends Component {
     });
   }
 
+  /**
+   * Handle a selection of a direction.
+   */
   handleDirectionSelection(event) {
     this.updateDirectionPreference(event.target.value);
   }
-    
+
+  /**
+   * Given a direction id string,
+   * update the `currentLine` state to have
+   * that direction as the inbound direction in the
+   * `directionPreference` field. The outbound direction
+   * is selected by choosing the first non-`directionId` direction
+   * of the possibilities. TODO: this is probably broken for
+   * routes that only have one direction (e.g., loops).
+   */
   updateDirectionPreference(directionId) {
     let line = this.state.currentLine;
     let inbound = directionId;
@@ -173,10 +228,19 @@ class AddLineDialog extends Component {
     });
   } 
 
+  /**
+   * Handle a selection of a changeover time
+   * in the select boxes.
+   */
   handleTimeSelection(event) {
     this.updateTime(event.target.value);
   }
 
+  /**
+   * Given an hour for the changeover time,
+   * update the `currentChangeover` preference
+   * and the `DirectionPreferenceModel` for the `currentLine`.
+   */
   updateTime(hour) {
 
     //Cache the selected agency as the preferred one.
@@ -192,6 +256,10 @@ class AddLineDialog extends Component {
     });
   }
 
+  /**
+   * Upon clicking the `Add Line` button, call the `addLine` callback
+   * on the main app, and close the dialog.
+   */
   handleOkButton() {
     let line = this.state.currentLine;
     this.props.addLine(line);

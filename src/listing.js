@@ -7,6 +7,15 @@ import {
 import './listing.css';
 import clear from './clear.svg';
 
+/**
+ * Component for the list of different lines that
+ * the user is tracking.
+ *
+ * props: a list of `LineModel`s, callbacks for
+ *        removing lines from the main app.
+ *
+ * state: none.
+ */
 export
 class LineListing extends Component {
   render() {
@@ -24,15 +33,24 @@ class LineListing extends Component {
     );
   }
 
-  addLine(line) {
-    this.props.addLine(line);
-  }
-
+  /**
+   * Tell the main app to remove a line.
+   */
   removeLine(lineId) {
     this.props.removeLine(lineId);
   }
 }
 
+/**
+ * Component for a single line entry.
+ *
+ * props: a `LineModel`, a callback from the line listing
+ *        for removing this line, and `even` property used
+ *        for background styling.
+ *
+ * state: a `StopModel` for the nearest stop, based on the
+ *        user's location.
+ */
 export
 class Line extends Component {
   constructor(props) {
@@ -62,15 +80,26 @@ class Line extends Component {
     );
   }
 
+  /**
+   * Upon mounting, update the stop model, and set a timer
+   * for updating it every two minutes in case the user is on
+   * the move.
+   */
   componentDidMount() {
     this.updateStop();
     this._timer = setInterval(()=>{this.updateStop();}, 120000);
   }
 
+  /**
+   * Upon unmounting, clear the timer.
+   */
   componentWillUnmount() {
     clearInterval(this._timer);
   }
 
+  /**
+   * Recalculate the nearest transit stop to the user for this line.
+   */
   updateStop() {
     let direction = getDirectionForLine(this.props.line);
     getNearestStop(this.props.line, direction).then((stop)=>{
@@ -81,6 +110,13 @@ class Line extends Component {
   }
 }
 
+/**
+ * A component for displaying some information about a line.
+ *
+ * props: a `LineModel`, a `StopModel`
+ *
+ * state: none.
+ */
 export
 class LineInfo extends Component {
   render() {
@@ -98,7 +134,15 @@ class LineInfo extends Component {
   }
 }
 
-
+/**
+ * A component representing a listing of predictions for
+ * a given transit line and stop.
+ *
+ * props: a `StopModel` and a `LineModel` for which we are
+ *        getting predictions.
+ *
+ * state: a list of `PredictionModel`s.
+ */
 export
 class Prediction extends Component {
   constructor(props) {
@@ -133,6 +177,10 @@ class Prediction extends Component {
     );
   }
 
+  /**
+   * Upon mounting, update the predictions and set a timer
+   * to do that every 30 seconds.
+   */
   componentDidMount() {
     if(this.props.stop.id) {
       this.updatePrediction();
@@ -142,18 +190,28 @@ class Prediction extends Component {
     this._timer = setInterval(()=>{this.updatePrediction();}, 30000);
   }
 
+  /**
+   * If the props are updated, we probably are near to a
+   * new stop, so get a new set of predictions.
+   */
   componentDidUpdate(prevProps, prevState) {
     if(this.props.stop.id && prevProps.stop.id !== this.props.stop.id) {
       this.updatePrediction();
     }
   }
 
+  /**
+   * Get predictions for the current stop and line.
+   */
   updatePrediction() {
     getPredictionsForStop(this.props.line, this.props.stop).then((pred) => {
       this.setState({ prediction: pred });
     });
   }
 
+  /**
+   * Upon unmounting, clear the timer.
+   */
   componentWillUnmount() {
     clearInterval(this._timer);
   }

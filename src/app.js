@@ -7,7 +7,14 @@ import './listing.css';
 import { LineListing } from './listing';
 import { AddLineDialog } from './dialog';
 
-
+/**
+ * The toplevel component for Commuting Operation.
+ *
+ * props: none.
+ *
+ * state: A list of `LineModels` selected by the user,
+ *        and whether the `AddLine` dialog is open.
+ */
 class App extends Component {
   constructor(props) {
     super(props);
@@ -46,6 +53,9 @@ class App extends Component {
     });
   }
 
+  /**
+   * Add a new `LineModel` to the app state.
+   */
   addLine(line) {
     let lines = this.state.lines;
     lines.push(line);
@@ -56,6 +66,10 @@ class App extends Component {
     localStorage.setItem('lines', JSON.stringify(lines));
   }
 
+  /**
+   * Remove a `LineModel` from the app state, based
+   * on the lineId.
+   */
   removeLine(lineId) {
     let lines = this.state.lines;
     lines = lines.filter(l => l.id!==lineId);
@@ -67,6 +81,10 @@ class App extends Component {
   }
 
 
+  /**
+   * Get any lines that have been cached in the
+   * user's localStorage.
+   */
   getStoredLines() {
     // Load the stored lines, if any.
     let storedLines = JSON.parse(localStorage.getItem('lines'));

@@ -1,10 +1,31 @@
+//Copyright (c) Ian Rose, 2017.
+
+/**
+ * URL for the Nextbus REST API. Note that this uses an undocumented
+ * JSON feed instead of the documented XML feed. The content appears
+ * identical, though.
+ */
 const baseUrl = 'http://webservices.nextbus.com/service/publicJSONFeed';
+
+/**
+ * URL for the HTTPS proxy. Without this, most browsers will block the
+ * site due to a mixture of HTTPS and HTTP. HTTPS is required for location
+ * services.
+ */
 const proxyUrl = 'https://commuting-operation-proxy.herokuapp.com/proxy/?url='
 
+/**
+ * Given a set of query arguments for the Nextbus API,
+ * assemble the URL for the request. This includes the
+ * URL for the Heroku HTTPS proxy.
+ */
 function assembleRequestUrl (args) {
   return proxyUrl+baseUrl+'?'+args.join('&');
 }
 
+/**
+ * Wrap an HTTP request in a promise.
+ */
 function makeRequest (method, url) {
   return new Promise( (resolve, reject)=>{
     let xhr = new XMLHttpRequest();
@@ -29,8 +50,12 @@ function makeRequest (method, url) {
   });
 }
 
-//compute dot prodcut between the two position vectors
-//as a measure of distance.
+/**
+ * Compute the physical distance in meters
+ * between two points, represented by latitude
+ * and longitude. The arguments are expected
+ * to satisfy `PositionModel`.
+ */
 export
 function distance( pos1, pos2 ) {
   const radius = 6371.e3;
@@ -48,6 +73,11 @@ function distance( pos1, pos2 ) {
   return angularDistance * radius;
 }
 
+/**
+ * Get a list of agencies supported by Nextbus.
+ * The list is filled with objects satisfying
+ * `AgencyModel`.
+ */
 export
 function getAgencyList() {
   return makeRequest('GET', assembleRequestUrl([
@@ -65,6 +95,13 @@ function getAgencyList() {
   });
 }
 
+/**
+ * Given an `AgencyModel`, get the lines
+ * that are within that agency. The line list
+ * returned by this function has lines satisfying
+ * `LineModel`, but the `direction` and `directionPreference`
+ * fields will be undefined.
+ */
 export
 function getLinesForAgency(agency) {
   return makeRequest('GET', assembleRequestUrl([
@@ -72,6 +109,8 @@ function getLinesForAgency(agency) {
     'a='+agency.id
   ])).then((result) => {
     let lines = [];
+    //In case the API just returns a single
+    //route, arrayify it.
     let routes = result.route;
     if(!Array.isArray(result.route)) {
       routes = [routes];
@@ -89,6 +128,11 @@ function getLinesForAgency(agency) {
   });
 }
 
+/**
+ * Given the short id for a line and an `AgencyModel`,
+ * get the full `LineModel`. The `directionPreference`
+ * field will necessarily be undefined.
+ */
 export
 function getLineForId(agency, id) {
   return makeRequest('GET', assembleRequestUrl([
@@ -97,6 +141,8 @@ function getLineForId(agency, id) {
     'r='+id
   ])).then((result)=> {
     let directions = [];
+    //If the route just has a single direction
+    //(as may be the case for a loop), arrayify it.
     let routeDir = result.route.direction;
     if(!Array.isArray(routeDir)) {
       routeDir = [routeDir];
@@ -117,15 +163,25 @@ function getLineForId(agency, id) {
   });
 }
 
-
+/**
+ * Given a `LineModel`, determine which direction
+ * the user wants to be travelling in. The `directionPreference`
+ * field should be filled, otherwise it just returns
+ * the first direction of the options.
+ */
 export
 function getDirectionForLine(line) {
   let toOutbound;
+  //If the directionPreference field is not set,
+  //just return the first `DirectionModel`.
   if(line.directionPreference) {
     toOutbound = line.directionPreference.toOutboundTime;
   } else {
     return line.direction[0];
   }
+  //Determine whether we are before or after
+  //the changeover time. TODO: this is probably
+  //broken for changeover times near midnight.
   let currentTime = new Date();
   let changeoverTime = new Date(
       currentTime.getFullYear(),
@@ -141,6 +197,13 @@ function getDirectionForLine(line) {
   }
 }
 
+/**
+ * Gets the current position of the
+ * user. This will trigger a dialog asking
+ * for permissions, and the website must be
+ * served over HTTPS (otherwise browser security
+ * will disallow it.
+ */
 export
 function getCurrentPosition() {
   return new Promise((resolve,reject)=>{
@@ -156,6 +219,11 @@ function getCurrentPosition() {
   });
 }
 
+/**
+ * Given a `LineModel` and a direction tag,
+ * determine the closest stop to the user.
+ * This returns an object satisfying `StopModel`.
+ */
 export
 function getNearestStop(line, direction) {
   let nextBusRequest = makeRequest('GET', assembleRequestUrl([
@@ -212,6 +280,10 @@ function getNearestStop(line, direction) {
   });
 }
 
+/**
+ * Given a `StopModel`, get the arrival predictions.
+ * Returns a vector of `PredictionModel`s.
+ */
 export
 function getPredictionsForStop(line, stop) {
   return makeRequest('GET', assembleRequestUrl([
