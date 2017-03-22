@@ -20,6 +20,11 @@ export
 class LineListing extends Component {
   render() {
     let lines = this.props.lines;
+    if (lines.length === 0) {
+      return (
+        <h2>Welcome! To get started, click the "+" button above and add a route!</h2>
+      );
+    }
     let listing = [];
     let i = 0;
     for (let line of lines) {

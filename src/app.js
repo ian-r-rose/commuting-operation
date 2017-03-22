@@ -57,6 +57,12 @@ class App extends Component {
    * Add a new `LineModel` to the app state.
    */
   addLine(line) {
+    //Don't add duplicate lines, which would be
+    //redundant, and makes it tricky to set up
+    //React keys.
+    if( this.isDuplicate(line) ) {
+      return;
+    }
     let lines = this.state.lines;
     lines.push(line);
     this.setState({
@@ -93,6 +99,19 @@ class App extends Component {
     }
 
     return storedLines;
+  }
+
+  /**
+   * Check whether a givin `LineModel` is a duplicate
+   * of an already existing one.
+   */
+  isDuplicate(line) {
+    for(let l of this.state.lines) {
+      if(JSON.stringify(l) === JSON.stringify(line) ) {
+        return true;
+      }
+    }
+    return false;
   }
 }
 
