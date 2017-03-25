@@ -130,7 +130,7 @@ class LineInfo extends Component {
       + direction.displayId.slice(1);
     return (
       <div className="LineInfo">
-        <div className="LineId">{this.props.line.displayId}</div>
+        <div className="LineId">{this.props.line.id}</div>
         <div className="LineGeography">
           <div className="StopLocation">{this.props.stop.displayId+' '+displayDirection}</div>
         </div>
