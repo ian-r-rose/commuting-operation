@@ -3,7 +3,7 @@
   "version": "0.2.5",
   "description": "An HTTPS proxy for the Nextbus public feed",
   "engines": {
-    "node": "5.9.1"
+    "node": "6.11.1"
   },
   "main": "proxy.js",
   "scripts": {
