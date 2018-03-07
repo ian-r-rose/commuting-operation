@@ -8,13 +8,13 @@ import './dialog.css';
  * we cache these values in localStorage.
  */
 //Cache agency preference
-let agencyPreference = localStorage.getItem('agencyPreference');
+let agencyPreference = JSON.parse(localStorage.getItem('agencyPreference'));
 if (!agencyPreference || !agencyPreference.id) {
   agencyPreference = {
     id: 'actransit',
     displayId: 'AC Transit',
   };
-  localStorage.setItem('agencyPreference', agencyPreference);
+  localStorage.setItem('agencyPreference', JSON.stringify(agencyPreference));
 }
 
 // Cache changeover time.
@@ -224,7 +224,7 @@ export class AddLineDialog extends Component {
     let lineListingPromise = getLinesForAgency(agency);
 
     //Cache the selected agency as the preferred one.
-    localStorage.setItem('agencyPreference', agency);
+    localStorage.setItem('agencyPreference', JSON.stringify(agency));
     agencyPreference = agency;
 
     lineListingPromise.then(lines => {
