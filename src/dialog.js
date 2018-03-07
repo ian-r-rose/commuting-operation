@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { getAgencyList, getLinesForAgency, getLineForId } from './nextbus';
+import React, {Component} from 'react';
+import {getAgencyList, getLinesForAgency, getLineForId} from './nextbus';
 import './dialog.css';
 
 /*
@@ -12,13 +12,15 @@ let agencyPreference = localStorage.getItem('agencyPreference');
 if (!agencyPreference || !agencyPreference.id) {
   agencyPreference = {
     id: 'actransit',
-    displayId: 'AC Transit'
-  }
+    displayId: 'AC Transit',
+  };
   localStorage.setItem('agencyPreference', agencyPreference);
 }
 
 // Cache changeover time.
-let changeoverTimePreference = Number(localStorage.getItem('changeoverTimePreference'));
+let changeoverTimePreference = Number(
+  localStorage.getItem('changeoverTimePreference'),
+);
 if (!changeoverTimePreference) {
   changeoverTimePreference = 12;
   localStorage.setItem('changeoverTimePreference', changeoverTimePreference);
@@ -36,8 +38,7 @@ if (!changeoverTimePreference) {
  *        for the changeover, a list of all possible `AgencyModel`s,
  *        a list of all `LineModels` for the current `AgencyModel`.
  */
-export
-class AddLineDialog extends Component {
+export class AddLineDialog extends Component {
   constructor(props) {
     super(props);
 
@@ -47,87 +48,149 @@ class AddLineDialog extends Component {
       currentChangeover: changeoverTimePreference,
       agencyListing: undefined,
       lineListing: undefined,
-    }
+    };
   }
 
   render() {
     //Don't render if the dialog is closed.
-    if(this.props.isOpen === false) {
+    if (this.props.isOpen === false) {
       return null;
     }
 
     //Populate the agencies select box.
     let agencies = undefined;
-    if(this.state.agencyListing) {
+    if (this.state.agencyListing) {
       agencies = [];
       for (let agency of this.state.agencyListing) {
-        agencies.push(<option key={agency.id} value={agency.id}>{agency.displayId}</option>);
+        agencies.push(
+          <option key={agency.id} value={agency.id}>
+            {agency.displayId}
+          </option>,
+        );
       }
     }
 
     //Populate the lines select box.
     let lines = undefined;
-    if(this.state.lineListing) {
+    if (this.state.lineListing) {
       lines = [];
       for (let line of this.state.lineListing) {
-        lines.push(<option key={line.id} value={line.id}>{line.displayId}</option>);
+        lines.push(
+          <option key={line.id} value={line.id}>
+            {line.displayId}
+          </option>,
+        );
       }
     }
 
     //Populate the directions select box.
     let directions = undefined;
-    if(this.state.currentLine && this.state.currentLine.direction) {
+    if (this.state.currentLine && this.state.currentLine.direction) {
       directions = [];
       for (let direction of this.state.currentLine.direction) {
-        directions.push(<option key={direction.id} value={direction.id}>{direction.displayId}</option>);
+        directions.push(
+          <option key={direction.id} value={direction.id}>
+            {direction.displayId}
+          </option>,
+        );
       }
     }
 
     //Populate the changeover times select box.
-    let hours = ['12:00 AM', '1:00 AM', '2:00 AM', '3:00 AM', '4:00 AM', '5:00 AM',
-                 '6:00 AM', '7:00 AM', '8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM',
-                 '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM',
-                 '6:00 PM', '7:00 PM', '8:00 PM', '9:00 PM', '10:00 PM', '11:00 PM'];
+    let hours = [
+      '12:00 AM',
+      '1:00 AM',
+      '2:00 AM',
+      '3:00 AM',
+      '4:00 AM',
+      '5:00 AM',
+      '6:00 AM',
+      '7:00 AM',
+      '8:00 AM',
+      '9:00 AM',
+      '10:00 AM',
+      '11:00 AM',
+      '12:00 PM',
+      '1:00 PM',
+      '2:00 PM',
+      '3:00 PM',
+      '4:00 PM',
+      '5:00 PM',
+      '6:00 PM',
+      '7:00 PM',
+      '8:00 PM',
+      '9:00 PM',
+      '10:00 PM',
+      '11:00 PM',
+    ];
     let i = 0;
     let times = [];
-    for(let hour of hours) {
-      times.push(<option key={i} value={i}>{hour}</option>);
+    for (let hour of hours) {
+      times.push(
+        <option key={i} value={i}>
+          {hour}
+        </option>,
+      );
       i++;
     }
 
     return (
-        <div className="AddLineDialog">
-          <div className="SelectionBlock">
-            <p className="SelectionLabel">Transit agency:</p>
-            <select onChange={(value)=>{this.handleAgencySelection(value);}} defaultValue={agencyPreference}>
-              {agencies}
-            </select>
-          </div>
-
-          <div className="SelectionBlock">
-            <p className="SelectionLabel">Route:</p>
-            <select onChange={(value)=>{this.handleLineSelection(value);}}>
-              {lines}
-            </select>
-          </div>
-
-          <div className="SelectionBlock">
-            <p className="SelectionLabel">Inbound direction:</p>
-            <select onChange={(value)=>{this.handleDirectionSelection(value);}}>
-              {directions}
-            </select>
-          </div>
-
-          <div className="SelectionBlock">
-            <p className="SelectionLabel">Change directions at:</p>
-            <select onChange={(value)=>{this.handleTimeSelection(value);}} defaultValue={changeoverTimePreference}>
-              {times}
-            </select>
-          </div>
-          <br/>
-          <button onClick={()=>{this.props.onClose()}}>Cancel</button>
-          <button onClick={()=>{this.handleOkButton()}}>Add Line</button>
+      <div className="AddLineDialog">
+        <div className="SelectionBlock">
+          <p className="SelectionLabel">Transit agency:</p>
+          <select
+            onChange={value => {
+              this.handleAgencySelection(value);
+            }}
+            defaultValue={agencyPreference}>
+            {agencies}
+          </select>
         </div>
+
+        <div className="SelectionBlock">
+          <p className="SelectionLabel">Route:</p>
+          <select
+            onChange={value => {
+              this.handleLineSelection(value);
+            }}>
+            {lines}
+          </select>
+        </div>
+
+        <div className="SelectionBlock">
+          <p className="SelectionLabel">Inbound direction:</p>
+          <select
+            onChange={value => {
+              this.handleDirectionSelection(value);
+            }}>
+            {directions}
+          </select>
+        </div>
+
+        <div className="SelectionBlock">
+          <p className="SelectionLabel">Change directions at:</p>
+          <select
+            onChange={value => {
+              this.handleTimeSelection(value);
+            }}
+            defaultValue={changeoverTimePreference}>
+            {times}
+          </select>
+        </div>
+        <br />
+        <button
+          onClick={() => {
+            this.props.onClose();
+          }}>
+          Cancel
+        </button>
+        <button
+          onClick={() => {
+            this.handleOkButton();
+          }}>
+          Add Line
+        </button>
+      </div>
     );
   }
 
@@ -135,7 +198,7 @@ class AddLineDialog extends Component {
    * Upon mounting, update the currently selected agency.
    */
   componentDidMount() {
-    getAgencyList().then((agencies)=>{
+    getAgencyList().then(agencies => {
       this.setState({
         agencyListing: agencies,
       });
@@ -148,7 +211,7 @@ class AddLineDialog extends Component {
    */
   handleAgencySelection(event) {
     let agencies = this.state.agencyListing;
-    let newAgency = agencies.find((a) => a.id === event.target.value);
+    let newAgency = agencies.find(a => a.id === event.target.value);
     this.updateAgency(newAgency);
   }
 
@@ -164,10 +227,10 @@ class AddLineDialog extends Component {
     localStorage.setItem('agencyPreference', agency);
     agencyPreference = agency;
 
-    lineListingPromise.then((lines)=>{
+    lineListingPromise.then(lines => {
       this.setState({
         lineListing: lines,
-        currentAgency: agency
+        currentAgency: agency,
       });
       this.updateLine(lines[0]);
     });
@@ -178,7 +241,7 @@ class AddLineDialog extends Component {
    */
   handleLineSelection(event) {
     let lines = this.state.lineListing;
-    let newLine = lines.find((l) => l.id === event.target.value);
+    let newLine = lines.find(l => l.id === event.target.value);
     this.updateLine(newLine);
   }
 
@@ -187,7 +250,7 @@ class AddLineDialog extends Component {
    * as the listing for possible directions for that line.
    */
   updateLine(line) {
-    getLineForId(this.state.currentAgency, line.id).then((line)=>{
+    getLineForId(this.state.currentAgency, line.id).then(line => {
       this.setState({
         currentLine: line,
       });
@@ -215,18 +278,18 @@ class AddLineDialog extends Component {
     let line = this.state.currentLine;
     let inbound = directionId;
     //choose the tag of the first one not matching inbound
-    let outbound = line.direction.find((d) => d.id !== inbound).id;
+    let outbound = line.direction.find(d => d.id !== inbound).id;
 
     line.directionPreference = {
       inbound: inbound,
       outbound: outbound,
-      toOutboundTime: this.state.currentChangeover
-    }
+      toOutboundTime: this.state.currentChangeover,
+    };
 
     this.setState({
-      currentLine: line
+      currentLine: line,
     });
-  } 
+  }
 
   /**
    * Handle a selection of a changeover time
@@ -242,7 +305,6 @@ class AddLineDialog extends Component {
    * and the `DirectionPreferenceModel` for the `currentLine`.
    */
   updateTime(hour) {
-
     //Cache the selected agency as the preferred one.
     localStorage.setItem('changeoverTimePreference', hour);
     changeoverTimePreference = hour;
@@ -252,7 +314,7 @@ class AddLineDialog extends Component {
 
     this.setState({
       currentChangeover: hour,
-      currentLine: line
+      currentLine: line,
     });
   }
 
@@ -263,7 +325,6 @@ class AddLineDialog extends Component {
   handleOkButton() {
     let line = this.state.currentLine;
     this.props.addLine(line);
-    this.props.onClose()
+    this.props.onClose();
   }
 }
-

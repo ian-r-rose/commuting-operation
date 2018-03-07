@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import logo from './logo.svg';
 import add from './add.svg';
 import './app.css';
 import './listing.css';
 
-import { LineListing } from './listing';
-import { AddLineDialog } from './dialog';
+import {LineListing} from './listing';
+import {AddLineDialog} from './dialog';
 
 /**
  * The toplevel component for Commuting Operation.
@@ -23,7 +23,7 @@ class App extends Component {
 
     this.state = {
       modalOpen: false,
-      lines: lines
+      lines: lines,
     };
   }
 
@@ -31,25 +31,46 @@ class App extends Component {
     return (
       <div className="App">
         <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo"/>
+          <img src={logo} className="App-logo" alt="logo" />
           <h1>&nbsp; Commuting Operation &nbsp;</h1>
-          <img className="AddLineButton" height="50px" src={add} alt="Add route" onClick={()=>{this.openModal()}} />
+          <img
+            className="AddLineButton"
+            height="50px"
+            src={add}
+            alt="Add route"
+            onClick={() => {
+              this.openModal();
+            }}
+          />
         </div>
-        <AddLineDialog isOpen={this.state.modalOpen} onClose={()=>{this.closeModal()}} addLine={(line)=>{this.addLine(line);}} />
-        <LineListing lines={this.state.lines} removeLine={(lineId)=>{this.removeLine(lineId);}} />
+        <AddLineDialog
+          isOpen={this.state.modalOpen}
+          onClose={() => {
+            this.closeModal();
+          }}
+          addLine={line => {
+            this.addLine(line);
+          }}
+        />
+        <LineListing
+          lines={this.state.lines}
+          removeLine={lineId => {
+            this.removeLine(lineId);
+          }}
+        />
       </div>
     );
   }
 
   openModal() {
-    this.setState( {
-      modalOpen: true
+    this.setState({
+      modalOpen: true,
     });
   }
 
   closeModal() {
-    this.setState( {
-      modalOpen: false
+    this.setState({
+      modalOpen: false,
     });
   }
 
@@ -60,13 +81,13 @@ class App extends Component {
     //Don't add duplicate lines, which would be
     //redundant, and makes it tricky to set up
     //React keys.
-    if( this.isDuplicate(line) ) {
+    if (this.isDuplicate(line)) {
       return;
     }
     let lines = this.state.lines;
     lines.push(line);
     this.setState({
-      lines: lines
+      lines: lines,
     });
     //update the cache
     localStorage.setItem('lines', JSON.stringify(lines));
@@ -78,14 +99,13 @@ class App extends Component {
    */
   removeLine(lineId) {
     let lines = this.state.lines;
-    lines = lines.filter(l => l.id!==lineId);
+    lines = lines.filter(l => l.id !== lineId);
     this.setState({
-      lines: lines
+      lines: lines,
     });
     //update the cache
     localStorage.setItem('lines', JSON.stringify(lines));
   }
-
 
   /**
    * Get any lines that have been cached in the
@@ -106,8 +126,8 @@ class App extends Component {
    * of an already existing one.
    */
   isDuplicate(line) {
-    for(let l of this.state.lines) {
-      if(JSON.stringify(l) === JSON.stringify(line) ) {
+    for (let l of this.state.lines) {
+      if (JSON.stringify(l) === JSON.stringify(line)) {
         return true;
       }
     }

@@ -7,7 +7,6 @@
  * file is intended as a reference.
  */
 
-
 /**
  * Model describing the physical position of something.
  */
@@ -133,7 +132,7 @@ class LineModel {
    * In most cases this will be two entries long,
    * but not in every case.
    */
-  direction[];
+  direction;
 
   /**
    * A user's `DirectionPreferenceModel` for
