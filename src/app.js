@@ -113,7 +113,12 @@ class App extends Component {
    */
   getStoredLines() {
     // Load the stored lines, if any.
-    let storedLines = JSON.parse(localStorage.getItem('lines'));
+    let storedLines = undefined;
+    try {
+      storedLines = JSON.parse(localStorage.getItem('lines'));
+    } catch (err) {
+      localStorage.clear();
+    }
     if (!storedLines) {
       storedLines = [];
     }

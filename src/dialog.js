@@ -8,7 +8,12 @@ import './dialog.css';
  * we cache these values in localStorage.
  */
 //Cache agency preference
-let agencyPreference = JSON.parse(localStorage.getItem('agencyPreference'));
+let agencyPreference = undefined;
+try {
+  agencyPreference = JSON.parse(localStorage.getItem('agencyPreference'));
+} catch (err) {
+  localStorage.clear();
+}
 if (!agencyPreference || !agencyPreference.id) {
   agencyPreference = {
     id: 'actransit',
@@ -18,9 +23,14 @@ if (!agencyPreference || !agencyPreference.id) {
 }
 
 // Cache changeover time.
-let changeoverTimePreference = Number(
-  localStorage.getItem('changeoverTimePreference'),
-);
+let changeoverTimePreference = undefined;
+try {
+  changeoverTimePreference = Number(
+    localStorage.getItem('changeoverTimePreference'),
+  );
+} catch (err) {
+  localStorage.clear();
+}
 if (!changeoverTimePreference) {
   changeoverTimePreference = 12;
   localStorage.setItem('changeoverTimePreference', changeoverTimePreference);
@@ -304,7 +314,7 @@ export class AddLineDialog extends Component {
    */
   updateDirectionPreference(inbound, outbound) {
     let line = this.state.currentLine;
-    let defaultId = line.direction[0].id
+    let defaultId = line.direction[0].id;
 
     line.directionPreference = {
       inbound: inbound || defaultId,
