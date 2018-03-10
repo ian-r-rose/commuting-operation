@@ -100,14 +100,14 @@ export class Line extends Component {
 
   /**
    * Upon mounting, update the stop model, and set a timer
-   * for updating it every two minutes in case the user is on
+   * for updating it every thirty seconds in case the user is on
    * the move.
    */
   componentDidMount() {
     this.updateStop();
     this._timer = setInterval(() => {
       this.updateStop();
-    }, 120000);
+    }, 30000);
   }
 
   /**
@@ -209,10 +209,10 @@ export class Prediction extends Component {
       this.updatePrediction();
     }
 
-    //Set a timer for 30 seconds between updates.
+    //Set a timer for 15 seconds between updates.
     this._timer = setInterval(() => {
       this.updatePrediction();
-    }, 30000);
+    }, 15000);
   }
 
   /**
