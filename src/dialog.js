@@ -161,7 +161,17 @@ export class AddLineDialog extends Component {
           <p className="SelectionLabel">Inbound direction:</p>
           <select
             onChange={value => {
-              this.handleDirectionSelection(value);
+              this.handleInboundSelection(value);
+            }}>
+            {directions}
+          </select>
+        </div>
+
+        <div className="SelectionBlock">
+          <p className="SelectionLabel">Outbound direction:</p>
+          <select
+            onChange={value => {
+              this.handleOutboundSelection(value);
             }}>
             {directions}
           </select>
@@ -270,10 +280,17 @@ export class AddLineDialog extends Component {
   }
 
   /**
-   * Handle a selection of a direction.
+   * Handle a selection of an inbound direction.
    */
-  handleDirectionSelection(event) {
-    this.updateDirectionPreference(event.target.value);
+  handleInboundSelection(event) {
+    this.updateDirectionPreference(event.target.value, undefined);
+  }
+
+  /**
+   * Handle a selection of an outbound direction.
+   */
+  handleOutboundSelection(event) {
+    this.updateDirectionPreference(undefined, event.target.value);
   }
 
   /**
@@ -285,15 +302,13 @@ export class AddLineDialog extends Component {
    * of the possibilities. TODO: this is probably broken for
    * routes that only have one direction (e.g., loops).
    */
-  updateDirectionPreference(directionId) {
+  updateDirectionPreference(inbound, outbound) {
     let line = this.state.currentLine;
-    let inbound = directionId;
-    //choose the tag of the first one not matching inbound
-    let outbound = line.direction.find(d => d.id !== inbound).id;
+    let defaultId = line.direction[0].id
 
     line.directionPreference = {
-      inbound: inbound,
-      outbound: outbound,
+      inbound: inbound || defaultId,
+      outbound: outbound || defaultId,
       toOutboundTime: this.state.currentChangeover,
     };
 
