@@ -142,7 +142,7 @@ export class AddLineDialog extends Component {
             onChange={value => {
               this.handleAgencySelection(value);
             }}
-            defaultValue={agencyPreference}>
+            value={agencyPreference.id}>
             {agencies}
           </select>
         </div>
@@ -220,6 +220,12 @@ export class AddLineDialog extends Component {
    * as well as updating the list of `LineModel`s for that agency.
    */
   updateAgency(agency) {
+    // Set the lines to an empty set until we get the listing.
+    this.setState({
+      lineListing: [],
+      currentAgency: agency,
+    });
+
     //Query for all the lines for this agency
     let lineListingPromise = getLinesForAgency(agency);
 
@@ -250,7 +256,12 @@ export class AddLineDialog extends Component {
    * as the listing for possible directions for that line.
    */
   updateLine(line) {
+    // Set the current line, with missing direction data
+    this.setState({
+      currentLine: line,
+    });
     getLineForId(this.state.currentAgency, line.id).then(line => {
+      // Reset the line, but now with direction data.
       this.setState({
         currentLine: line,
       });
@@ -286,6 +297,7 @@ export class AddLineDialog extends Component {
       toOutboundTime: this.state.currentChangeover,
     };
 
+    // Set the line, now with direction preference.
     this.setState({
       currentLine: line,
     });
