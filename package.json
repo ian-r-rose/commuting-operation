@@ -1,6 +1,6 @@
 {
   "name": "commuting-operation",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": false,
   "homepage": "https://ian-r-rose.github.io/commuting-operation",
   "dependencies": {
