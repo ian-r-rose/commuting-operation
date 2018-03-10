@@ -54,8 +54,8 @@ class App extends Component {
         />
         <LineListing
           lines={this.state.lines}
-          removeLine={lineId => {
-            this.removeLine(lineId);
+          removeLine={line => {
+            this.removeLine(line);
           }}
         />
       </div>
@@ -97,9 +97,9 @@ class App extends Component {
    * Remove a `LineModel` from the app state, based
    * on the lineId.
    */
-  removeLine(lineId) {
+  removeLine(line) {
     let lines = this.state.lines;
-    lines = lines.filter(l => l.id !== lineId);
+    lines = lines.filter(l => l !== line);
     this.setState({
       lines: lines,
     });

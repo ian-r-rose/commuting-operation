@@ -35,8 +35,8 @@ export class LineListing extends Component {
           even={!!(i % 2 === 0)}
           key={JSON.stringify(line)}
           line={line}
-          remove={id => {
-            this.removeLine(id);
+          remove={line => {
+            this.removeLine(line);
           }}
         />,
       );
@@ -48,8 +48,8 @@ export class LineListing extends Component {
   /**
    * Tell the main app to remove a line.
    */
-  removeLine(lineId) {
-    this.props.removeLine(lineId);
+  removeLine(line) {
+    this.props.removeLine(line);
   }
 }
 
@@ -91,7 +91,7 @@ export class Line extends Component {
           src={clear}
           alt="Remove route"
           onClick={() => {
-            this.props.remove(this.props.line.id);
+            this.props.remove(this.props.line);
           }}
         />
       </div>
