@@ -121,8 +121,7 @@ export class Line extends Component {
    * Recalculate the nearest transit stop to the user for this line.
    */
   updateStop() {
-    let direction = getDirectionForLine(this.props.line);
-    getNearestStop(this.props.line, direction).then(stop => {
+    getNearestStop(this.props.line).then(stop => {
       this.setState({
         stop: stop,
       });

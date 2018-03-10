@@ -219,11 +219,11 @@ export function getCurrentPosition() {
 }
 
 /**
- * Given a `LineModel` and a direction tag,
+ * Given a `LineModel`,
  * determine the closest stop to the user.
  * This returns an object satisfying `StopModel`.
  */
-export function getNearestStop(line, direction) {
+export function getNearestStop(line) {
   let nextBusRequest = makeRequest(
     'GET',
     assembleRequestUrl([
@@ -235,6 +235,7 @@ export function getNearestStop(line, direction) {
   let locationRequest = getCurrentPosition();
   return Promise.all([nextBusRequest, locationRequest]).then(
     ([result, position]) => {
+      let direction = getDirectionForLine(line);
       //Get the list of stop tags for the given
       //direction, since they may not be the same
       //both ways.
@@ -304,8 +305,28 @@ export function getPredictionsForStop(line, stop) {
     if (result.predictions.dirTitleBecauseNoPredictions) {
       return [];
     }
-    //Get the predictions, and make them an array if necessary
-    let predictions = result.predictions.direction.prediction;
+
+    // If multiple route directions match for the stop, find the one with the
+    // same display ID as the line.
+    let predictions = undefined;
+    if (Array.isArray(result.predictions.direction)) {
+      // Get the direction model
+      const direction = getDirectionForLine(line);
+      const predictionsList = result.predictions.direction.filter(
+        d => d.title === direction.displayId,
+      );
+      if (predictionsList.length === 0) {
+        throw new Error('Cannot find predictions for stop');
+      }
+      predictions = predictionsList[0].prediction;
+    } else {
+      predictions = result.predictions.direction.prediction;
+    }
+    if (!predictions) {
+      throw new Error('Cannot find the predictions for stop');
+    }
+
+    // Make the predictions into an array if necessary
     if (!Array.isArray(predictions)) {
       predictions = [predictions];
     }
