@@ -316,14 +316,18 @@ export function getPredictionsForStop(line, stop) {
         d => d.title === direction.displayId,
       );
       if (predictionsList.length === 0) {
-        throw new Error('Cannot find predictions for stop');
+        // If there are no predictions for this direction,
+        // return an empty array.
+        return [];
       }
       predictions = predictionsList[0].prediction;
     } else {
       predictions = result.predictions.direction.prediction;
     }
     if (!predictions) {
-      throw new Error('Cannot find the predictions for stop');
+      // If there are no predictions for this direction,
+      // return an empty array.
+      return [];
     }
 
     // Make the predictions into an array if necessary
