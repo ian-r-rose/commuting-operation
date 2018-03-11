@@ -24,6 +24,8 @@ The intended user is somebody who commutes on the bus, and uses
 the same few routes on most days, but may not always be waiting at the
 exact same stops.
 
+![screenshot](screenshot.png "Commuting Operation")
+
 ## Code
 
 This uses the [NextBus](https://www.nextbus.com/xmlFeedDocs/NextBusXMLFeed.pdf) API
